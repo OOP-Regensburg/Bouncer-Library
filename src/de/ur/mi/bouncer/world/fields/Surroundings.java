@@ -1,4 +1,4 @@
-package de.ur.mi.bouncer.world;
+package de.ur.mi.bouncer.world.fields;
 import java.util.HashMap;
 
 import de.ur.mi.bouncer.Direction;

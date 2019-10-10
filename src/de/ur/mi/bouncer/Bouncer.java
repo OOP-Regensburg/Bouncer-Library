@@ -1,62 +1,38 @@
 package de.ur.mi.bouncer;
 
-import java.util.List;
 
-import de.ur.mi.bouncer.error.BouncerError;
-import de.ur.mi.bouncer.events.EventBus;
-import de.ur.mi.bouncer.events.NullEventBus;
-import de.ur.mi.bouncer.world.FieldColor;
-import de.ur.mi.bouncer.world.Field;
-import de.ur.mi.bouncer.world.NullField;
-import de.ur.mi.bouncer.world.TwoDimensionalWorld;
+import de.ur.mi.bouncer.world.BouncerChangedListener;
+import de.ur.mi.bouncer.world.fields.FieldColor;
+import de.ur.mi.bouncer.world.fields.Field;
+import de.ur.mi.bouncer.world.fields.NullField;
+import de.ur.mi.bouncer.world.World;
 
 public class Bouncer {
-	private EventBus eventBus;
-	private final BeeperBag inventory;
 	private Field currentField;
 	private Direction currentOrientation;
-	private boolean shouldThrowError = false;
+	private BouncerChangedListener listener;
 
 	public Bouncer() {
-		eventBus = new NullEventBus();
 		currentField = new NullField();
-		inventory = new BeeperBag();
 		currentOrientation = Direction.EAST;
 	}
 
-	public final void setEventBus(EventBus eventBus) {
-		this.eventBus.eventBusWasChanged();
-		this.eventBus = eventBus;
-	}
-
-	public void setStopsOnError(boolean throwsError) {
-		this.shouldThrowError = throwsError;
-	}
-
-	public final void fillInventory(List<Beeper> beepers) {
-		inventory.fill(beepers);
-	}
-
-
-	public void placeInWorld(TwoDimensionalWorld world) {
+	public void placeInWorld(World world) {
 		this.placeAt(world.bouncerStartField());
+		this.listener = listener;
 	}
 
 	public final void placeAt(Field field) {
 		if (currentField == field) {
-			throwErrorIfWanted("Bouncer steht schon auf diesem Feld");
 			return;
 		}
 		move(currentField, field);
-		eventBus.bouncerWasPlacedAtField(currentField);
 	}
 
 	public final void move() {
 		Field nextField = currentField
 				.tryToLeaveInDirection(currentOrientation);
 		if (nextField == currentField) {
-			throwErrorIfWanted("Bouncer konnte diesen Schritt nicht gehen.");
-			eventBus.bouncerTriedToMoveInObstacle(currentField, currentOrientation);
 			return;
 		}
 		move(currentField, nextField);
@@ -66,41 +42,17 @@ public class Bouncer {
 		from.leftByBouncer();
 		currentField = to;
 		to.enteredByBouncer();
-		eventBus.bouncerMoved(from, to);
-	}
-
-	private final boolean canPickUpBeeper() {
-		return currentField.hasBeeper();
-	}
-
-	public final void putBeeper() {
-		if (inventory.isEmpty()) {
-			throwErrorIfWanted("Bouncer hat versucht einen Beeper zu platzieren, obwohl er selbst keinen hat.");
-			return;
-		}
-		Beeper beeper = inventory.retrieveBeeper();
-		currentField.putBeeper(beeper);
-		eventBus.bouncerPutBeeperAtField(beeper, currentField);
-	}
-
-	public final void pickBeeper() {
-		if (!canPickUpBeeper()) {
-			throwErrorIfWanted("Bouncer hat versucht einen Beeper aufzuheben, wo keiner war.");
-			return;
-		}
-		Beeper beeper = currentField.pickUpBeeper();
-		eventBus.bouncerPickedUpBeeper(beeper);
-		inventory.addBeeper(beeper);
+		notifyListener();
 	}
 
 	public final void turnLeft() {
 		currentOrientation = currentOrientation.afterLeftTurn();
-		eventBus.bouncerTurnedLeft();
+		notifyListener();
 	}
 
 	public final void paintField(FieldColor fieldColor) {
 		currentField.paintWith(fieldColor);
-		eventBus.fieldWasPaintedWithColorByBouncer(currentField, fieldColor);
+		notifyListener();
 	}
 
 	public final boolean isOnFieldWithColor(FieldColor fieldColor) {
@@ -109,7 +61,7 @@ public class Bouncer {
 
 	public final void clearFieldColor() {
 		currentField.clearColor();
-		eventBus.fieldColorWasClearedByBouncer(currentField);
+		notifyListener();
 	}
 
 	public final boolean canMoveForward() {
@@ -158,9 +110,15 @@ public class Bouncer {
 		return this.currentOrientation;
 	}
 
-	private void throwErrorIfWanted(String errorMessage) {
-		if (shouldThrowError) {
-			throw new BouncerError(errorMessage);
+	public void setBouncerListener(BouncerChangedListener listener) {
+		this.listener = listener;
+	}
+
+	private void notifyListener() {
+		if(listener != null) {
+			listener.onBouncerChanged();
 		}
 	}
+
+
 }

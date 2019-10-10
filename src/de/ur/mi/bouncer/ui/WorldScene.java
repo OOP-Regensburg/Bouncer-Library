@@ -1,157 +1,96 @@
 package de.ur.mi.bouncer.ui;
+
 import de.ur.mi.bouncer.Bouncer;
 import de.ur.mi.bouncer.Direction;
 import de.ur.mi.bouncer.apps.AppConfiguration;
-import de.ur.mi.bouncer.world.Collision;
-import de.ur.mi.bouncer.world.TwoDimensionalWorld;
+import de.ur.mi.bouncer.world.World;
+import de.ur.mi.oop.colors.Color;
+import de.ur.mi.oop.colors.Colors;
 
 public class WorldScene {
-	private TwoDimensionalWorld world;
-	private final Bouncer bouncer;
-	private final AppConfiguration appConfig;
-	private final int squareSize;
-	private final int windowSize;
+    private World world;
+    private final Bouncer bouncer;
+    private final int squareSize;
+    private final int windowSize;
 
-	public WorldScene(TwoDimensionalWorld world, Bouncer bouncer,
-			int windowSize, AppConfiguration appConfig) {
-		this.world = world;
-		this.bouncer = bouncer;
-		this.windowSize = windowSize;
-		this.squareSize = windowSize / world.size();
-		this.appConfig = appConfig;
-	}
+    public WorldScene(World world, Bouncer bouncer) {
+        this.world = world;
+        this.bouncer = bouncer;
+        this.windowSize = AppConfiguration.DEFAULT_WINDOW_SIZE;
+        this.squareSize = AppConfiguration.DEFAULT_SQUARE_SIZE;
+    }
 
-	public void setWorld(TwoDimensionalWorld world) {
-		this.world = world;
-	}
+    public void draw(GraphicsContext graphics) {
+        drawBackground(graphics);
+        drawGrid(graphics);
+        drawWorld(graphics);
+    }
 
-	public void draw(GraphicsContext graphics) {
-		drawBackground(graphics);
-		drawGrid(graphics);
-		drawWorld(graphics);
-	}
+    private void drawBackground(GraphicsContext graphics) {
+        graphics.drawBackground(Colors.WHITE);
+    }
 
-	private void drawBackground(GraphicsContext graphics) {
-		graphics.background(appConfig.backgroundColor());
-	}
+    private void drawGrid(GraphicsContext graphics) {
+        for (int i = 1; i < world.size(); i++) {
+            graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, Colors.BLACK);
+            graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, Colors.BLACK);
+        }
+    }
 
-	private void drawGrid(GraphicsContext graphics) {
-		graphics.noFill();
-		for (int i = 1; i < world.size(); i++) {
-			graphics.stroke(appConfig.gridColorFront());
-			graphics.strokeWeight(appConfig.borderWeight());
-			graphics.line(i * squareSize, 0, i * squareSize, windowSize);
-			graphics.line(0, i * squareSize, windowSize, i * squareSize);
-		}
-	}
+    private void drawWorld(GraphicsContext graphics) {
+        for (int x = 0; x < world.size(); x++) {
+            for (int y = 0; y < world.size(); y++) {
+                if (world.hasObstacleAt(x, y)) {
+                    drawObstacle(graphics, x, y);
+                    continue;
+                }
+                drawColoredField(graphics, x, y);
+                if (world.hasBouncerAt(x, y)) {
+                    drawBouncer(graphics, x, y);
+                }
+            }
+        }
+    }
 
-	private void drawWorld(GraphicsContext graphics) {
-		for (int x = 0; x < world.size(); x++) {
-			for (int y = 0; y < world.size(); y++) {
-				if (world.hasObstacleAt(x, y)) {
-					drawObstacle(graphics, x, y);
-					continue;
-				}
-				drawColoredField(graphics, x, y);
-				if (world.hasBouncerAt(x, y)) {
-					drawBouncer(graphics, x, y);
-				}
-				if (world.hasCollisionAt(x, y)) {
-					drawCollision(graphics, x, y);
-				}
-			}
-		}
-	}
+    private void drawBouncer(GraphicsContext graphics, int x, int y) {
+        int xPos = x * squareSize + squareSize / 2;
+        int yPos = y * squareSize + squareSize / 2;
+        int radius = (int) (squareSize * AppConfiguration.DEFAULT_BOUNCER_SCALE_FACTOR);
+        // Assume east facing bouncer as default
+        int mouthStartAngle = -35;
+        int mouthEndAngle = 70;
+        if (bouncer.isFacingSouth()) {
+            mouthStartAngle -= 90;
+        }
+        if (bouncer.isFacingWest()) {
+            mouthStartAngle -= 180;
+        }
+        if (bouncer.isFacingNorth()) {
+            mouthStartAngle -= 270;
+        }
+        graphics.drawCircle(xPos, yPos, radius / 2, Colors.RED);
+        graphics.drawArc(xPos, yPos, radius / 2, mouthStartAngle, mouthEndAngle, Colors.RED);
+    }
 
-	private void drawCollision(GraphicsContext graphics, int x, int y) {
-		graphics.fill(appConfig.collisionColor());
-		graphics.stroke(0xFF000000);
-		Collision collision = world.collisionAt(x, y);
-		int width = squareSize / 2;
-		int height = squareSize / 2;
-		int xPos = x * squareSize;
-		int yPos = y * squareSize;
-		float start = 0;
-		float stop = 0;
-		if (collision.direction == Direction.NORTH) {
-			xPos += squareSize / 2;
-			start = (float)0;
-			stop = (float)(Math.PI);
-		} else if (collision.direction == Direction.EAST) {
-			xPos += squareSize;
-			yPos += squareSize / 2;
-			start = (float) (Math.PI / 2);
-			stop = (float) (Math.PI + Math.PI /2);
-		} else if (collision.direction == Direction.WEST) {
-			yPos += squareSize / 2;
-			start = (float)(-1*Math.PI/2);
-			stop = (float)(Math.PI/2);
-		} else {
-			xPos += squareSize / 2;
-			yPos += squareSize;
-			start = (float)(Math.PI);
-			stop = (float)(2*Math.PI);
-		}
-		graphics.arc(xPos, yPos, width, height, start, stop);
-	}
+    private void drawColoredField(GraphicsContext graphics, int x, int y) {
+        Color color = Colors.TRANSPARENT;
+        switch (world.colorAt(x, y)) {
+            case RED:
+                color = new Color(233, 0, 0);
+                break;
+            case GREEN:
+                color = new Color(0, 255, 0);
+                break;
+            case BLUE:
+                color = new Color(0, 0, 255);
+                break;
+            case WHITE:
+                return;
+        }
+        graphics.drawRect(x * squareSize, y * squareSize, squareSize, squareSize, color);
+    }
 
-	private void drawBouncer(GraphicsContext graphics, int x, int y) {
-		float open = 0;
-		float close = 0;
-		switch (bouncer.currentOrientation()) {
-		case NORTH:
-			open = -70;
-			close = 250;
-			break;
-		case EAST:
-			open = 20;
-			close = 340;
-			break;
-		case SOUTH:
-			open = -250;
-			close = 70;
-			break;
-		case WEST:
-			open = -160;
-			close = 160;
-			break;
-		}
-		open = (float) Math.toRadians(open);
-		close = (float) Math.toRadians(close);
-		graphics.noStroke();
-		graphics.fill(appConfig.bouncerColor());
-		int xPos = x * squareSize + squareSize / 2;
-		int yPos = y * squareSize + squareSize / 2;
-		int radius = (int) (squareSize * appConfig.bouncerScaleFactor());
-		graphics.arc(xPos, yPos, radius, radius, open, close);
-	}
-
-	private void drawColoredField(GraphicsContext graphics, int x, int y) {
-		graphics.noStroke();
-		switch (world.colorAt(x, y)) {
-		case RED:
-			graphics.fill(appConfig.redColor());
-			break;
-		case GREEN:
-			graphics.fill(appConfig.greenColor());
-			break;
-		case BLUE:
-			graphics.fill(appConfig.blueColor());
-			break;
-		case WHITE:
-			return;
-		}
-		graphics.rectModeCorner();
-		graphics.rect(x * squareSize + appConfig.borderWeight(), y * squareSize
-				+ appConfig.borderWeight(),
-				squareSize - appConfig.borderWeight(),
-				squareSize - appConfig.borderWeight());
-	}
-
-	private void drawObstacle(GraphicsContext graphics, int x, int y) {
-		graphics.noStroke();
-		graphics.fill(appConfig.obstacleColor());
-		graphics.rectModeCorner();
-		graphics.rect(x * squareSize, y * squareSize, squareSize, squareSize);
-	}
+    private void drawObstacle(GraphicsContext graphics, int x, int y) {
+        graphics.drawRect(x * squareSize, y * squareSize, squareSize, squareSize, Colors.BLACK);
+    }
 }

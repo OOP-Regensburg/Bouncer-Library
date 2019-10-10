@@ -1,14 +1,11 @@
 package de.ur.mi.bouncer.ui;
+
+import de.ur.mi.oop.colors.Color;
+
 public interface GraphicsContext {
-	void background(int color);
-	void noFill();
-	void noStroke();
-	void stroke(int color);
-	void strokeWeight(float weight);
-	void line(float x1, float y1, float x2, float y2);
-	void rect(float a, float b, float c, float d);
-	void rectModeCorner();
-	void fill(int color);
-	void arc(float a, float b, float c, float d, float start, float stop);
-	void ellipse(float x, float y, float width, float height);
+	void drawBackground(Color color);
+	void drawLine(int startX, int startY, int endX, int endY, Color color);
+	void drawRect(int x, int y, int width, int height, Color color);
+	void drawCircle(int x, int y, int radius, Color color);
+	void drawArc(int x, int y, int radius, int start, int end, Color color);
 }

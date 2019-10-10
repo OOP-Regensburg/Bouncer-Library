@@ -1,27 +1,27 @@
-package de.ur.mi.bouncer.world.builders.xml;
+package de.ur.mi.bouncer.world.loader;
 
-import de.ur.mi.bouncer.world.FieldColor;
+import de.ur.mi.bouncer.world.fields.FieldColor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import de.ur.mi.bouncer.world.TwoDimensionalWorld;
+import de.ur.mi.bouncer.world.World;
 
 public class XmlWorldBuilder {
 
-	public static TwoDimensionalWorld fromXmlDocument(Document doc) {
-		TwoDimensionalWorld world = TwoDimensionalWorld.emptyWorld();
+	public static World fromXmlDocument(Document doc) {
+		World world = World.emptyWorld();
 		setupWorld(world, doc);
 		return world;
 	}
 
-	private static void setupWorld(TwoDimensionalWorld world, Document doc) {
+	private static void setupWorld(World world, Document doc) {
 		setupObstacles(world, doc);
 		setupColors(world, doc);
 		setupBouncer(world, doc);
 	}
 
-	private static void setupBouncer(TwoDimensionalWorld world, Document doc) {
+	private static void setupBouncer(World world, Document doc) {
 		Element bouncer = doc.select("bouncer").first();
 		if (bouncer == null) {
 			return;
@@ -31,7 +31,7 @@ public class XmlWorldBuilder {
 		world.placeBouncerAt(x, y);
 	}
 
-	private static void setupColors(TwoDimensionalWorld world, Document doc) {
+	private static void setupColors(World world, Document doc) {
 		Elements colors = doc.select("color");
 		for (int i = 0; i < colors.size(); i++) {
 			Element color = colors.get(i);
@@ -49,7 +49,7 @@ public class XmlWorldBuilder {
 		}
 	}
 
-	private static void setupObstacles(TwoDimensionalWorld world, Document doc) {
+	private static void setupObstacles(World world, Document doc) {
 		Elements obstacles = doc.select("obstacle");
 		for (int i = 0; i < obstacles.size(); i++) {
 			Element obstacle = obstacles.get(i);

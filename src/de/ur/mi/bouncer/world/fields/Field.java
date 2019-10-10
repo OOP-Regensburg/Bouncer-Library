@@ -1,20 +1,15 @@
-package de.ur.mi.bouncer.world;
-import de.ur.mi.bouncer.Beeper;
-import de.ur.mi.bouncer.BeeperBag;
+package de.ur.mi.bouncer.world.fields;
 import de.ur.mi.bouncer.Direction;
 
 public class Field {
 	private final Surroundings surroundings;
 	private FieldContent content;
-	private BeeperBag beeperBag;
 	private FieldColor fieldColor;
-	private Collision collision;
 	
-	public Field(FieldContent content, FieldColor fieldColor, BeeperBag beeperBag,
+	public Field(FieldContent content, FieldColor fieldColor,
 			Surroundings surroundings) {
 		this.content = content;
 		this.fieldColor = fieldColor;
-		this.beeperBag = beeperBag;
 		this.surroundings = surroundings;
 	}
 	
@@ -32,7 +27,6 @@ public class Field {
 
 	public Field tryToLeaveInDirection(Direction direction) {
 		if (!canBeLeftInDirection(direction)) {
-			this.collision = new Collision(direction);
 			return this;
 		}
 		Field nextField = surroundings.neighbourInDirection(direction);
@@ -50,21 +44,6 @@ public class Field {
 
 	public void enteredByBouncer() {
 		content = FieldContent.BOUNCER;
-	}
-
-	public void putBeeper(Beeper beeper) {
-		beeperBag.addBeeper(beeper);
-	}
-
-	public boolean hasBeeper() {
-		return !beeperBag.isEmpty();
-	}
-
-	public Beeper pickUpBeeper() {
-		if (beeperBag.isEmpty()) {
-			return null;
-		}
-		return beeperBag.retrieveBeeper();
 	}
 
 	public void paintWith(FieldColor fieldColor) {
@@ -87,19 +66,7 @@ public class Field {
 		this.fieldColor = FieldColor.WHITE;
 	}
 	
-	public boolean hasCollision() {
-		return this.collision != null;
-	}
-	
-	public Collision collision() {
-		return this.collision;
-	}
-	
-	public void purgeCollision() {
-		this.collision = null;
-	}
-	
-	void setContent(FieldContent content) {
+	public void setContent(FieldContent content) {
 		this.content = content;
 	}
 
