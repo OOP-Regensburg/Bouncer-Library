@@ -1,13 +1,9 @@
 # BouncerLib
-Bouncer is a Karel-Clone [http://en.wikipedia.org/wiki/Karel_%28programming_language%29] using the infamous GraphisApp-Library.
+Bouncer is a clone of the [Karel Programming Environment](http://en.wikipedia.org/wiki/Karel_%28programming_language%29) based on our own [GraphicsApp](https://github.com/OOP-Regensburg/GraphicsApp-Reborn-Library).
 
-## Dependencies
+## Dependencies (included in release JAR)
 
-* jsoup [http://jsoup.org/download]
-* ProcessingOO.jar [http://132.199.139.24/~baa56852/data/bouncer/libs/ProcessingOO.jar]
-
-## Usage
-
-Import dependencies and run de.mi.ur.bouncer.demo.BouncerDemo (Applet).
+* [Jsoup](http://jsoup.org/download)
+* [GraphicsApp](https://github.com/OOP-Regensburg/GraphicsApp-Reborn-Library)
 
 
