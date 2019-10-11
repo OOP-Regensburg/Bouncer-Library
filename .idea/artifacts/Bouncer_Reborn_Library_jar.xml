@@ -3,8 +3,8 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Bouncer_Reborn_Library_jar</output-path>
     <root id="archive" name="Bouncer-Library.jar">
       <element id="module-output" name="Bouncer-Library" />
-      <element id="library" level="project" name="GraphicsApp (v1.1)" />
-      <element id="library" level="project" name="JSOUP (v1.12.1)" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../GraphicsApp/GraphicsApp-Reborn-Library/out/artifacts/GraphicsApp_Reborn_Library_jar/GraphicsApp-Reborn-Library.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/jsoup-1.12.1.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

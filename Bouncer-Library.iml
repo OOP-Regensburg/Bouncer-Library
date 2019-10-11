@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
     </content>
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="library" name="JSOUP (v1.12.1)" level="project" />
-    <orderEntry type="library" name="GraphicsApp (v1.1)" level="project" />
+    <orderEntry type="library" exported="" name="JSOUP (v1.12.1)" level="project" />
+    <orderEntry type="library" exported="" name="GraphicsApp (v1.1)" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
