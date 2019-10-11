@@ -15,7 +15,6 @@ public class WorldLoader {
 			Document doc = Jsoup.parse(mapFile, "UTF-8");
 			return XmlWorldBuilder.fromXmlDocument(doc);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}

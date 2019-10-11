@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Bouncer-Reborn-Library:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Bouncer_Reborn_Library_jar</output-path>
+    <root id="archive" name="Bouncer-Library.jar">
+      <element id="module-output" name="Bouncer-Library" />
+      <element id="library" level="project" name="GraphicsApp (v1.1)" />
+      <element id="library" level="project" name="JSOUP (v1.12.1)" />
+    </root>
+  </artifact>
+</component>

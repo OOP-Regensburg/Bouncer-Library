@@ -22,8 +22,8 @@ public class WorldScene {
 
     public void draw(GraphicsContext graphics) {
         drawBackground(graphics);
-        drawGrid(graphics);
         drawWorld(graphics);
+        drawGrid(graphics);
     }
 
     private void drawBackground(GraphicsContext graphics) {
@@ -31,9 +31,9 @@ public class WorldScene {
     }
 
     private void drawGrid(GraphicsContext graphics) {
-        for (int i = 1; i < world.size(); i++) {
-            graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, Colors.BLACK);
-            graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, Colors.BLACK);
+        for (int i = 1; i <= world.size(); i++) {
+            graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, AppConfiguration.DEFAULT_LINE_WEIGHT+ AppConfiguration.DEFAULT_LINE_WEIGHT_OVERFLOW, AppConfiguration.DEFAULT_GRID_COLOR);
+            graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, AppConfiguration.DEFAULT_LINE_WEIGHT + AppConfiguration.DEFAULT_LINE_WEIGHT_OVERFLOW, AppConfiguration.DEFAULT_GRID_COLOR);
         }
     }
 
@@ -56,6 +56,22 @@ public class WorldScene {
         int xPos = x * squareSize + squareSize / 2;
         int yPos = y * squareSize + squareSize / 2;
         int radius = (int) (squareSize * AppConfiguration.DEFAULT_BOUNCER_SCALE_FACTOR);
+        int radiusEye = (int) (radius * AppConfiguration.DEFAULT_BOUNCER_EYE_SCALE_FACTOR);
+        // Default eye position for east facing bouncer
+        int xPosEye = xPos - radiusEye;
+        int yPosEye = yPos - radiusEye;
+        switch(bouncer.currentOrientation()) {
+            case SOUTH:
+            case WEST:
+                xPosEye = xPos + radiusEye;
+                break;
+            case NORTH:
+                xPosEye = xPos + radiusEye;
+                yPosEye = yPos + radiusEye;
+                break;
+            default:
+                break;
+        }
         // Assume east facing bouncer as default
         int mouthStartAngle = -35;
         int mouthEndAngle = 70;
@@ -68,29 +84,39 @@ public class WorldScene {
         if (bouncer.isFacingNorth()) {
             mouthStartAngle -= 270;
         }
-        graphics.drawCircle(xPos, yPos, radius / 2, Colors.RED);
-        graphics.drawArc(xPos, yPos, radius / 2, mouthStartAngle, mouthEndAngle, Colors.RED);
+        // Draw body
+        graphics.drawCircle(xPos, yPos, radius / 2, AppConfiguration.DEFAULT_BOUNCER_COLOR);
+        // Draw eye and mouth
+        Color fieldColor = getColorAt(x, y);
+        graphics.drawCircle(xPosEye, yPosEye, radiusEye / 2, fieldColor);
+        graphics.drawArc(xPos, yPos, radius / 2, mouthStartAngle, mouthEndAngle, fieldColor);
     }
 
     private void drawColoredField(GraphicsContext graphics, int x, int y) {
-        Color color = Colors.TRANSPARENT;
-        switch (world.colorAt(x, y)) {
-            case RED:
-                color = new Color(233, 0, 0);
-                break;
-            case GREEN:
-                color = new Color(0, 255, 0);
-                break;
-            case BLUE:
-                color = new Color(0, 0, 255);
-                break;
-            case WHITE:
-                return;
-        }
-        graphics.drawRect(x * squareSize, y * squareSize, squareSize, squareSize, color);
+        Color color = getColorAt(x, y);
+        graphics.drawRect(x * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, y * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, color);
     }
 
     private void drawObstacle(GraphicsContext graphics, int x, int y) {
-        graphics.drawRect(x * squareSize, y * squareSize, squareSize, squareSize, Colors.BLACK);
+        graphics.drawRect(x * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, y * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, AppConfiguration.DEFAULT_BLOCK_COLOR);
+    }
+
+    private Color getColorAt(int x, int y) {
+        Color color = AppConfiguration.DEFAULT_BLOCK_COLOR;
+        switch (world.colorAt(x, y)) {
+            case RED:
+                color = AppConfiguration.RED_FIELD_COLOR;
+                break;
+            case GREEN:
+                color = AppConfiguration.GREEN_FIELD_COLOR;
+                break;
+            case BLUE:
+                color = AppConfiguration.BLUE_FIELD_COLOR;
+                break;
+            case WHITE:
+                color = AppConfiguration.DEFAULT_FIELD_COLOR;
+                break;
+        }
+        return color;
     }
 }

@@ -47,6 +47,7 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
         this.worldLoader = new WorldLoader();
         world = worldLoader.loadLocalMap(mapName);
         if (world == null) {
+            System.out.println("Could not find map: " + mapName + ". Loading empty map instead.");
             this.world = World.emptyWorld();
         }
         bouncer = createBouncer();
@@ -79,15 +80,15 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
     }
 
     @Override
-    public void drawLine(int startX, int startY, int endX, int endY, Color color) {
+    public void drawLine(int startX, int startY, int endX, int endY, int weight, Color color) {
         Line line = new Line(startX, startY, endX, endY, color);
-        line.setLineWidth(AppConfiguration.DEFAULT_LINE_WEIGHT);
+        line.setLineWidth(weight);
         line.draw();
     }
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color) {
-        Rectangle rect = new Rectangle(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT, width - 2 * AppConfiguration.DEFAULT_LINE_WEIGHT, height - 2 * AppConfiguration.DEFAULT_LINE_WEIGHT, color);
+        Rectangle rect = new Rectangle(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT, width, height, color);
         rect.draw();
     }
 
@@ -99,7 +100,7 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawArc(int x, int y, int radius, int start, int end, Color color) {
-        Arc arc = new Arc(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT, radius + AppConfiguration.DEFAULT_LINE_WEIGHT, start, end, Colors.WHITE);
+        Arc arc = new Arc(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT/2, radius + AppConfiguration.DEFAULT_LINE_WEIGHT/2, start, end, color);
         arc.draw();
     }
 }

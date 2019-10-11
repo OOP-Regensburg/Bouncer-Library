@@ -1,5 +1,6 @@
 package de.ur.mi.bouncer.world.loader;
 
+import de.ur.mi.bouncer.apps.AppConfiguration;
 import de.ur.mi.bouncer.world.fields.FieldColor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,7 +23,7 @@ public class XmlWorldBuilder {
 	}
 
 	private static void setupBouncer(World world, Document doc) {
-		Element bouncer = doc.select("bouncer").first();
+		Element bouncer = doc.select(AppConfiguration.FIELD_NAME_BOUNCER).first();
 		if (bouncer == null) {
 			return;
 		}
@@ -32,13 +33,12 @@ public class XmlWorldBuilder {
 	}
 
 	private static void setupColors(World world, Document doc) {
-		Elements colors = doc.select("color");
+		Elements colors = doc.select(AppConfiguration.FIELD_NAME_COLOR);
 		for (int i = 0; i < colors.size(); i++) {
 			Element color = colors.get(i);
 			int x = Integer.valueOf(color.attr("x"));
 			int y = Integer.valueOf(color.attr("y"));
 			String value = color.attr("value");
-
 			if ("RED".equals(value)) {
 				world.paintFieldAt(x, y, FieldColor.RED);
 			} else if ("GREEN".equals(value)) {
@@ -50,7 +50,7 @@ public class XmlWorldBuilder {
 	}
 
 	private static void setupObstacles(World world, Document doc) {
-		Elements obstacles = doc.select("obstacle");
+		Elements obstacles = doc.select(AppConfiguration.FIELD_NAME_OBSTACLE);
 		for (int i = 0; i < obstacles.size(); i++) {
 			Element obstacle = obstacles.get(i);
 			int x = Integer.valueOf(obstacle.attr("x"));

@@ -15,5 +15,5 @@
 	<fieldColor x="11" y="14" value="RED" />
 	<fieldColor x="12" y="14" value="RED" />
 	<fieldColor x="13" y="14" value="GREEN" />
-	<fieldColor x="14" y="14" value="GREEN" />
+	<obstacle x="14" y="14" />
 </map>

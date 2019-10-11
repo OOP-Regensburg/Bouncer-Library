@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<map>
+    <bouncer x="0" y="14" />
+    <fieldColor x="10" y="14" value="GREEN" />
+    <fieldColor x="5" y="7" value="GREEN" />
+    <fieldColor x="3" y="1" value="GREEN" />
+    <fieldColor x="5" y="5" value="RED" />
+    <fieldColor x="2" y="9" value="RED" />
+    <obstacle x="11" y="5"/>
+    <fieldColor x="6" y="12" value="GREEN" />
+    <fieldColor x="7" y="1" value="RED" />
+    <fieldColor x="8" y="5" value="GREEN" />
+    <fieldColor x="3" y="4" value="GREEN" />
+    <obstacle x="10" y="7"/>
+    <fieldColor x="9" y="8" value="RED" />
+    <fieldColor x="2" y="9" value="RED" />
+    <fieldColor x="13" y="1" value="GREEN" />
+    <obstacle x="14" y="14" />
+</map>
