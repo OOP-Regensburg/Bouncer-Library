@@ -24,8 +24,8 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void initialize() {
-        this.getConfig().setWidth(AppConfiguration.DEFAULT_WINDOW_SIZE);
-        this.getConfig().setHeight(AppConfiguration.DEFAULT_WINDOW_SIZE);
+        this.getConfig().setWidth(AppConfiguration.getWindowSize());
+        this.getConfig().setHeight(AppConfiguration.getWindowSize());
         startBounceThread();
     }
 
@@ -44,6 +44,8 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
     }
 
     public final void loadMap(String mapName) {
+        this.getConfig().setWidth(AppConfiguration.getWindowSize());
+        this.getConfig().setHeight(AppConfiguration.getWindowSize());
         this.worldLoader = new WorldLoader();
         world = worldLoader.loadLocalMap(mapName);
         if (world == null) {
@@ -88,19 +90,19 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawRect(int x, int y, int width, int height, Color color) {
-        Rectangle rect = new Rectangle(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT, width, height, color);
+        Rectangle rect = new Rectangle(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight(), width, height, color);
         rect.draw();
     }
 
     @Override
     public void drawCircle(int x, int y, int radius, Color color) {
-        Circle circle = new Circle(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT, radius, color);
+        Circle circle = new Circle(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight(), radius, color);
         circle.draw();
     }
 
     @Override
     public void drawArc(int x, int y, int radius, int start, int end, Color color) {
-        Arc arc = new Arc(x + AppConfiguration.DEFAULT_LINE_WEIGHT, y + AppConfiguration.DEFAULT_LINE_WEIGHT/2, radius + AppConfiguration.DEFAULT_LINE_WEIGHT/2, start, end, color);
+        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color);
         arc.draw();
     }
 }

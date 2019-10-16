@@ -16,8 +16,8 @@ public class WorldScene {
     public WorldScene(World world, Bouncer bouncer) {
         this.world = world;
         this.bouncer = bouncer;
-        this.windowSize = AppConfiguration.DEFAULT_WINDOW_SIZE;
-        this.squareSize = AppConfiguration.DEFAULT_SQUARE_SIZE;
+        this.windowSize = AppConfiguration.getWindowSize();
+        this.squareSize = AppConfiguration.getSquareSize();
     }
 
     public void draw(GraphicsContext graphics) {
@@ -32,8 +32,8 @@ public class WorldScene {
 
     private void drawGrid(GraphicsContext graphics) {
         for (int i = 1; i <= world.size(); i++) {
-            graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, AppConfiguration.DEFAULT_LINE_WEIGHT+ AppConfiguration.DEFAULT_LINE_WEIGHT_OVERFLOW, AppConfiguration.DEFAULT_GRID_COLOR);
-            graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, AppConfiguration.DEFAULT_LINE_WEIGHT + AppConfiguration.DEFAULT_LINE_WEIGHT_OVERFLOW, AppConfiguration.DEFAULT_GRID_COLOR);
+            graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, AppConfiguration.getLineWeight()+ AppConfiguration.getLineWeightOverflow(), AppConfiguration.DEFAULT_GRID_COLOR);
+            graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, AppConfiguration.getLineWeight() + AppConfiguration.getLineWeightOverflow(), AppConfiguration.DEFAULT_GRID_COLOR);
         }
     }
 
@@ -94,11 +94,11 @@ public class WorldScene {
 
     private void drawColoredField(GraphicsContext graphics, int x, int y) {
         Color color = getColorAt(x, y);
-        graphics.drawRect(x * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, y * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, color);
+        graphics.drawRect(x * squareSize - AppConfiguration.getLineWeight()/2, y * squareSize - AppConfiguration.getLineWeight()/2, squareSize-AppConfiguration.getLineWeight(), squareSize-AppConfiguration.getLineWeight(), color);
     }
 
     private void drawObstacle(GraphicsContext graphics, int x, int y) {
-        graphics.drawRect(x * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, y * squareSize - AppConfiguration.DEFAULT_LINE_WEIGHT/2, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, squareSize-AppConfiguration.DEFAULT_LINE_WEIGHT, AppConfiguration.DEFAULT_BLOCK_COLOR);
+        graphics.drawRect(x * squareSize - AppConfiguration.getLineWeight()/2, y * squareSize - AppConfiguration.getLineWeight()/2, squareSize-AppConfiguration.getLineWeight(), squareSize-AppConfiguration.getLineWeight(), AppConfiguration.DEFAULT_BLOCK_COLOR);
     }
 
     private Color getColorAt(int x, int y) {
