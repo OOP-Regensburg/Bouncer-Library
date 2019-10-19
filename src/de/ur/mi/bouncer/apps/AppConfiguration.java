@@ -2,13 +2,15 @@ package de.ur.mi.bouncer.apps;
 
 import de.ur.mi.oop.colors.Color;
 
+import java.awt.*;
+
 public class AppConfiguration {
 
     private static final int DEFAULT_WINDOW_SIZE = 750;
+    private static final double DEFAULT_SCREEN_TO_WINDOW_RATIO = 0.75;
     private static final int DEFAULT_GRID_SIZE = 15;
     private static final int DEFAULT_LINE_WEIGHT = 2;
     private static final int DEFAULT_LINE_WEIGHT_OVERFLOW = 1;
-    private static final int DEFAULT_SQUARE_SIZE = DEFAULT_WINDOW_SIZE / DEFAULT_GRID_SIZE;
 
     public static final double DEFAULT_BOUNCER_SCALE_FACTOR = 0.8;
     public static final int DEFAULT_FRAME_RATE = 5;
@@ -62,7 +64,9 @@ public class AppConfiguration {
     }
 
 
+    public static void init() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        AppConfiguration.setWindowSize((int) (screenSize.height * DEFAULT_SCREEN_TO_WINDOW_RATIO));
 
-
-
+    }
 }

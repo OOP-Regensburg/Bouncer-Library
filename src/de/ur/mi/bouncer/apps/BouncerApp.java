@@ -5,11 +5,9 @@ import de.ur.mi.bouncer.ui.GraphicsContext;
 import de.ur.mi.bouncer.ui.WorldScene;
 import de.ur.mi.bouncer.world.BouncerChangedListener;
 import de.ur.mi.bouncer.world.World;
-import de.ur.mi.bouncer.world.WorldChangedListener;
 import de.ur.mi.bouncer.world.loader.WorldLoader;
 import de.ur.mi.oop.app.GraphicsApp;
 import de.ur.mi.oop.colors.Color;
-import de.ur.mi.oop.colors.Colors;
 import de.ur.mi.oop.graphics.*;
 
 public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerChangedListener {
@@ -24,11 +22,16 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void initialize() {
-        this.getConfig().setWidth(AppConfiguration.getWindowSize());
-        this.getConfig().setHeight(AppConfiguration.getWindowSize());
+        AppConfiguration.init();
+        ensureCorrectWindowSize();
         startBounceThread();
     }
 
+
+    private void ensureCorrectWindowSize() {
+        this.getConfig().setWidth(AppConfiguration.getWindowSize());
+        this.getConfig().setHeight(AppConfiguration.getWindowSize());
+    }
 
     private void startBounceThread() {
         new Thread(new Runnable() {
@@ -44,8 +47,8 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
     }
 
     public final void loadMap(String mapName) {
-        this.getConfig().setWidth(AppConfiguration.getWindowSize());
-        this.getConfig().setHeight(AppConfiguration.getWindowSize());
+        // Ensure that canvas will have correct size when configuration was changed manually
+        ensureCorrectWindowSize();
         this.worldLoader = new WorldLoader();
         world = worldLoader.loadLocalMap(mapName);
         if (world == null) {
