@@ -3,7 +3,6 @@ Bouncer is a clone of the [Karel Programming Environment](http://en.wikipedia.or
 
 ## Dependencies (included in release JAR)
 
-* [Jsoup](http://jsoup.org/download)
 * [GraphicsApp](https://github.com/OOP-Regensburg/GraphicsApp-Reborn-Library)
 
 
