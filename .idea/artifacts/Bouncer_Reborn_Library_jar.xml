@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Bouncer_Reborn_Library_jar</output-path>
     <root id="archive" name="Bouncer-Library.jar">
       <element id="module-output" name="Bouncer-Library" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../GraphicsApp/GraphicsApp-Reborn-Library/out/artifacts/GraphicsApp_Reborn_Library_jar/GraphicsApp-Reborn-Library.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/GraphicsApp-Reborn-Library.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
