@@ -107,7 +107,14 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawArc(int x, int y, int radius, int start, int end, Color color) {
-        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color);
+        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color, true);
+        arc.setBorder(color, 0);
+        arc.draw();
+    }
+
+    @Override
+    public void drawPieArc(int x, int y, int radius, int start, int end, Color color) {
+        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color, false);
         arc.setBorder(color, 0);
         arc.draw();
     }

@@ -8,4 +8,5 @@ public interface GraphicsContext {
 	void drawRect(int x, int y, int width, int height, Color color);
 	void drawCircle(int x, int y, int radius, Color color);
 	void drawArc(int x, int y, int radius, int start, int end, Color color);
+	void drawPieArc(int x, int y, int radius, int start, int end, Color color);
 }

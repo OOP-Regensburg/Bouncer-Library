@@ -89,7 +89,7 @@ public class WorldScene {
         // Draw eye and mouth
         Color fieldColor = getColorAt(x, y);
         graphics.drawCircle(xPosEye, yPosEye, radiusEye / 2, fieldColor);
-        graphics.drawArc(xPos, yPos, radius / 2, mouthStartAngle, mouthEndAngle, fieldColor);
+        graphics.drawPieArc(xPos, yPos, radius / 2, mouthStartAngle, mouthEndAngle, fieldColor);
     }
 
     private void drawColoredField(GraphicsContext graphics, int x, int y) {
