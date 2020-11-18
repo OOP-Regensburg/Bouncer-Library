@@ -79,7 +79,7 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawBackground(Color color) {
-        Background background = new Background();
+        Background background = new Background(AppConfiguration.getWindowSize(), AppConfiguration.getWindowSize());
         background.setColor(color);
         background.draw();
     }
