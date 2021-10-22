@@ -8,6 +8,7 @@ import de.ur.mi.bouncer.world.World;
 import de.ur.mi.bouncer.world.loader.WorldLoader;
 import de.ur.mi.oop.app.GraphicsApp;
 import de.ur.mi.oop.colors.Color;
+import de.ur.mi.oop.events.KeyPressedEvent;
 import de.ur.mi.oop.graphics.*;
 
 public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerChangedListener {
@@ -15,10 +16,12 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
     protected Bouncer bouncer;
     private World world;
     private WorldScene worldScene;
+    private BouncerThread bouncerThread;
+    private boolean isPaused = false;
+
     public Bouncer createBouncer() {
         return new Bouncer();
     }
-
 
     @Override
     public void initialize() {
@@ -29,17 +32,28 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
 
     private void ensureCorrectWindowSize() {
-        this.getConfig().setWidth(AppConfiguration.getWindowSize());
-        this.getConfig().setHeight(AppConfiguration.getWindowSize());
+        this.getConfig().setWidth(AppConfiguration.getPreferredWindowSize());
+        this.getConfig().setHeight(AppConfiguration.getPreferredWindowSize());
     }
 
     private void startBounceThread() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                bounce();
-            }
-        }).start();
+        bouncerThread = new BouncerThread(this);
+        bouncerThread.start();
+    }
+
+    private void toggleBounceThread() {
+        isPaused = !isPaused;
+        if (!isPaused) {
+            bouncerThread.interrupt();
+        }
+    }
+
+    private void increaseSpeed() {
+        AppConfiguration.increaseFrameRate();
+    }
+
+    private void decreaseSpeed() {
+        AppConfiguration.decreaseFrameRate();
     }
 
     public void bounce() {
@@ -52,7 +66,6 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
         this.worldLoader = new WorldLoader();
         world = worldLoader.loadLocalMap(mapName);
         if (world == null) {
-            System.out.println("Could not find map: " + mapName + ". Loading empty map instead.");
             this.world = World.emptyWorld();
         }
         bouncer = createBouncer();
@@ -63,10 +76,49 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void onBouncerChanged() {
+        /*
+         * This is a fine example of code that creeps into your system when you want to add
+         * additional features to a system that was not designed very well.
+         *
+         * What I had done: To allow students maximal creativity when
+         * writing Bouncer programs, client code and underlying rendering were
+         * separated as much as possible. Or at least I thought so. Each bouncer program
+         * starts from a single function (bounce), which runs in a separate thread.
+         * After each single action, performed by bouncer through the student's commands
+         * listed in the bounce method, this separate thread is asked to sleep for a certain time
+         * to delay the next action. This is necessary, since each action directly effects
+         * world state and rendering of this state (within another thread) is not
+         * synchronized with bouncer. The world is rendered as fast as possible. Without the delay,
+         * each new state would be rendered immediately, without the possibility to visually
+         * distinguish single steps of the student's program.
+         *
+         * What I should have done: Make Bouncer wait after each action and ONLY
+         * render the map when the world's state was actually changed.
+         *
+         * What I really should have done: Implement a working queue system where each state
+         * created by bouncer's action is saved individually, allowing for bidirectional playback
+         * with customizable playback speed.
+         *
+         * But we can now pause bouncer. At least for a maximum of 24 days.
+         */
         try {
-            Thread.sleep(1000 / AppConfiguration.DEFAULT_FRAME_RATE);
+            if (isPaused) {
+                Thread.sleep(Integer.MAX_VALUE);
+            } else {
+                Thread.sleep(1000 / AppConfiguration.getFrameRate());
+            }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onKeyPressed(KeyPressedEvent event) {
+        super.onKeyPressed(event);
+        switch (event.getKeyCode()) {
+            case KeyPressedEvent.VK_SPACE -> toggleBounceThread();
+            case KeyPressedEvent.VK_ADD -> increaseSpeed();
+            case KeyPressedEvent.VK_MINUS -> decreaseSpeed();
         }
     }
 
@@ -79,7 +131,7 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawBackground(Color color) {
-        Background background = new Background(AppConfiguration.getWindowSize(), AppConfiguration.getWindowSize());
+        Background background = new Background((int) AppConfiguration.getWindowSize(), (int) AppConfiguration.getWindowSize());
         background.setColor(color);
         background.draw();
     }
@@ -107,14 +159,14 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
 
     @Override
     public void drawArc(int x, int y, int radius, int start, int end, Color color) {
-        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color, true);
+        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight() / 2, radius + AppConfiguration.getLineWeight() / 2, start, end, color, true);
         arc.setBorder(color, 0);
         arc.draw();
     }
 
     @Override
     public void drawPieArc(int x, int y, int radius, int start, int end, Color color) {
-        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight()/2, radius + AppConfiguration.getLineWeight()/2, start, end, color, false);
+        Arc arc = new Arc(x + AppConfiguration.getLineWeight(), y + AppConfiguration.getLineWeight() / 2, radius + AppConfiguration.getLineWeight() / 2, start, end, color, false);
         arc.setBorder(color, 0);
         arc.draw();
     }

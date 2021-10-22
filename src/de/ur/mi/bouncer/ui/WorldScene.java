@@ -31,10 +31,12 @@ public class WorldScene {
     }
 
     private void drawGrid(GraphicsContext graphics) {
-        for (int i = 1; i <= world.size(); i++) {
+        for (int i = 1; i < world.size(); i++) {
             graphics.drawLine(i * squareSize, 0, i * squareSize, windowSize, AppConfiguration.getLineWeight()+ AppConfiguration.getLineWeightOverflow(), AppConfiguration.DEFAULT_GRID_COLOR);
             graphics.drawLine(0, i * squareSize, windowSize, i * squareSize, AppConfiguration.getLineWeight() + AppConfiguration.getLineWeightOverflow(), AppConfiguration.DEFAULT_GRID_COLOR);
         }
+        graphics.drawLine(0, 0, windowSize, 0, 2 * (AppConfiguration.getLineWeight() + AppConfiguration.getLineWeightOverflow()), AppConfiguration.DEFAULT_GRID_COLOR);
+        graphics.drawLine(0, windowSize, windowSize, windowSize, 6 * (AppConfiguration.getLineWeight() + AppConfiguration.getLineWeightOverflow()), AppConfiguration.DEFAULT_GRID_COLOR);
     }
 
     private void drawWorld(GraphicsContext graphics) {
