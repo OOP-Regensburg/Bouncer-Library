@@ -118,7 +118,7 @@ public class BouncerApp extends GraphicsApp implements GraphicsContext, BouncerC
         switch (event.getKeyCode()) {
             case KeyPressedEvent.VK_SPACE -> toggleBounceThread();
             case KeyPressedEvent.VK_ADD -> increaseSpeed();
-            case KeyPressedEvent.VK_MINUS -> decreaseSpeed();
+            case KeyPressedEvent.VK_SUBTRACT -> decreaseSpeed();
         }
     }
 
